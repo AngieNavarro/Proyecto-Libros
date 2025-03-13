@@ -1,0 +1,70 @@
+﻿@page "/libros"
+@using ProyectoLibros.Components.Modelos
+@using ProyectoLibros.Components.Repositorio
+@inject IRepositorio repositorio
+@rendermode InteractiveServer
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-dark">Lista de libros</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>TITULO</th>
+                    <th>DESCRIPCION</th>
+                    <th>AUTOR</th>
+                    <th>PAGINAS</th>
+                    <th>PRECIO</th>
+                    <th>FECHA CREACION</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var libro in listaLibros)
+                {
+                    <tr>
+                        <td>@libro.Id</td>
+                        <td>@libro.Titulo</td>
+                        <td>@libro.Descripcion</td>
+                        <td>@libro.Autor</td>
+                        <td>@libro.Paginas</td>
+                        <td>@libro.Precio</td>
+                        <td>@libro.FechaCreacion</td>
+
+                        <td>
+                            <a href="EditarLibros/@libro.Id" class="btn btn-success btn-sm"> <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>Editar</a>
+                            <button @onclick="@(()=>BorrarLibro(libro.Id))" class="btn btn-danger btn-sm"><span class="bi bi-delete" aria-hidden="true"></span> Eliminar</button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@code {
+    private List<Libro> listaLibros = new List<Libro>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaLibros = await repositorio.GetLibros();
+    }
+
+    //metodo borrar libro
+    private async Task BorrarLibro(int libroid)
+    {
+        await repositorio.EliminarLibro(libroid);
+        listaLibros = await repositorio.GetLibros();
+    }
+
+}

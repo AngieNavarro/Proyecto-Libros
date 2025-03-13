@@ -1,0 +1,116 @@
+﻿@page "/EditarLibros/{Id:int}"
+@using ProyectoLibros.Components.Modelos
+@using ProyectoLibros.Components.Repositorio
+@inject IRepositorio repositorio
+@inject NavigationManager navigationmanager;
+@rendermode InteractiveServer
+<h3>EditarLibros</h3>
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-dark">Crear un nuevo libros</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <EditForm Model="@modelolibro" OnValidSubmit="@(()=>ManejadorOnEditarLibro())">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="container">
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Titulo:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputText @bind-Value="modelolibro.Titulo" class="form-control" placeholder="Ingrese el titulo"></InputText>
+                            <ValidationMessage For="()=> modelolibro.Titulo"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Descripcion:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputText @bind-Value="modelolibro.Descripcion" class="form-control" placeholder="Ingrese el titulo"></InputText>
+                            <ValidationMessage For="()=> modelolibro.Descripcion"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Autor:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputText @bind-Value="modelolibro.Autor" class="form-control" placeholder="Ingrese el titulo"></InputText>
+                            <ValidationMessage For="()=> modelolibro.Autor"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Paginas:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputText @bind-Value="modelolibro.Paginas" class="form-control" placeholder="Ingrese el titulo"></InputText>
+                            <ValidationMessage For="()=> modelolibro.Paginas"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Precio:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputNumber @bind-Value="modelolibro.Precio" class="form-control" placeholder="Ingrese el titulo"></InputNumber>
+                            <ValidationMessage For="()=> modelolibro.Precio"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-danger" @onclick="@( ()=>navigationmanager.NavigateTo("/libros"))">Volver</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </EditForm>
+    </div>
+
+</div>
+@code {
+    private Libro modelolibro = new Libro();
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async  Task OnInitializedAsync()
+    {
+        modelolibro = await repositorio.GetLibroId(Id.Value);
+    }
+
+    private async Task ManejadorOnEditarLibro()
+    {
+        var Editarlibro = await repositorio.ActualizarLibro(Id.Value, modelolibro);
+        navigationmanager.NavigateTo("/libros");
+    }
+}
